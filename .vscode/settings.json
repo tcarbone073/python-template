@@ -1,0 +1,8 @@
+{
+    "editor.rulers": [90],
+    "workbench.tree.indent": 30,
+    "files.exclude": {
+        "**/.git": false
+    },
+    "python.analysis.autoImportCompletions": false
+}
