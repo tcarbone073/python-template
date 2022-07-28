@@ -1,0 +1,55 @@
+#!/bin/sh
+
+failmsg="ERROR: Aborting commit."
+
+# Flynt
+flynt --dry-run --fail-on-change --quiet . > /dev/null
+if [ $? -ne 0 ]; then
+    echo "ERROR: Flynt pre-commit hook failed."
+    echo $failmsg
+    exit 1
+else
+    echo "INFO: Checking for flynt fstrings... OK"
+fi
+
+# Black
+black --check --quiet .
+if [ $? -ne 0 ]; then
+    echo "ERROR: Black pre-commit hook failed."
+    echo $failmsg
+    exit 1
+else
+    echo "INFO: Checking for black formatting... OK"
+fi
+
+# isort
+isort --check-only --quiet .
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: isort pre-commit hook failed."
+    echo $failmsg
+    exit 1
+else
+    echo "INFO: Checking for isort... OK"
+fi
+
+# tests
+echo "INFO: Running tests..."
+python.exe -m tests.run --failfast --silent
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: some tests have failed."
+    echo $failmsg
+    exit 1
+else
+    echo "INFO: All tests pass"
+fi
+
+# build
+python.exe -m scripts.build --pre-commit
+if [ $? -ne 0 ]; then
+    echo $failmsg
+    exit 1
+fi
+
+exit 0

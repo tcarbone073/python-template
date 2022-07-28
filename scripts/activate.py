@@ -12,4 +12,3 @@ parser.add_argument(
 args = parser.parse_args()
 
 venv.create(env_dir=".venv")
-
